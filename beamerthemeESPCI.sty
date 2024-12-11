@@ -1,0 +1,166 @@
+% ------ IMPORTS -----------
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% ------ COLORS ------------
+
+\definecolor{pantone281}{RGB}{21, 47, 78}
+\definecolor{pantone2915}{RGB}{100, 185, 233}
+\definecolor{pantone192}{RGB}{228, 0, 70}
+\definecolor{pantone178}{RGB}{255, 88, 93}
+\definecolor{pantone4681}{RGB}{213, 192, 169}
+
+\colorlet{BackgroundColor}{white}
+\colorlet{TextColor}{black}
+
+% ------ FONTS -------------
+
+\setmainfont{Garamond}
+\newfontfamily{\cera}[
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic
+]{Cera}
+
+% ------ TITLE ------------
+
+\setbeamerfont{title}{family=\cera, series=\bfseries, size=\huge}
+\setbeamerfont{subtitle}{family=\cera, size=\large}
+\setbeamerfont{author}{size=\normalsize}
+
+\newlength{\titlebarheight}
+\setlength{\titlebarheight}{1cm}
+
+% -------- LOGO SETUP --------
+
+\newif\iflogoset
+\logosetfalse
+
+\newif\iftitlelogorightset
+\titlelogorightsetfalse
+
+\newif\iftitlelogocentreset
+\titlelogocentresetfalse
+
+\newif\iftitlelogoleftset
+\titlelogoleftsetfalse
+
+\newif\iftitlecoverset
+\titlecoversetfalse
+
+\newif\ifemailset
+\emailsetfalse
+
+\newcommand{\setLogo}[1]{%
+    \def\insertlogo{#1}%
+    \logosettrue
+}
+
+\newcommand{\setTitleLogoRight}[1]{%
+  \def\inserttitlelogoright{#1}%
+  \titlelogorightsettrue
+}
+
+\newcommand{\setTitleLogoCentre}[1]{%
+  \def\inserttitlelogocentre{#1}%
+  \titlelogocentresettrue
+}
+
+\newcommand{\setTitleLogoLeft}[1]{%
+  \def\inserttitlelogoleft{#1}%
+  \titlelogoleftsettrue
+}
+\newcommand{\setTitleCover}[1]{%
+  \def\inserttitlecover{#1}%
+  \titlecoversettrue
+}
+
+\newcommand{\email}[1]{%
+    \def\insertemail{#1}%
+    \emailsettrue
+}
+
+% ------ TEMPLATES --------
+
+\newdimen\slidewidth
+\newdimen\slideheight
+\slidewidth=\the\paperwidth
+\slideheight=\the\paperheight
+
+% disable navigation
+\setbeamertemplate{navigation symbols}{}
+
+% disable the damn default logo!
+\setbeamertemplate{sidebar right}{}
+
+% custom draw the title page above
+\setbeamertemplate{title page}{}
+
+% again, manually draw the frame title above
+\setbeamertemplate{frametitle}{}
+
+\setbeamertemplate{background}{
+    \begin{tikzpicture}
+        \useasboundingbox (0,0) rectangle(\the\paperwidth, \the\paperheight);
+        \fill[color=BackgroundColor] (0,0) rectangle(\the\paperwidth, \the\paperheight);
+
+        \ifnum\thepage=1\relax
+            \fill[color=pantone281] (0, 0.6\slideheight) rectangle(\slidewidth,\slideheight);
+
+            % title graphic left
+            \iftitlelogoleftset
+                        \node[anchor=north west, inner sep=0] at (0.25cm,\slideheight-0.25cm) {
+                        \includegraphics[height=2cm, width=0.5\slideheight, keepaspectratio]{\inserttitlelogoleft}
+                        };
+                    \fi
+
+            % title graphic centre
+            \iftitlelogocentreset
+                \node[anchor=north, inner sep=0] at (0.5\slidewidth,\slideheight-0.25cm) {
+                \includegraphics[height=2cm, width=0.5\slideheight, keepaspectratio]{\inserttitlelogocentre}
+                };
+            \fi
+
+            % title graphic right
+            \iftitlelogorightset
+                \node[anchor=north east, inner sep=0] at (\slidewidth-0.25cm,\slideheight-0.25cm) {
+                \includegraphics[height=3cm, width=0.7\slideheight, keepaspectratio]{\inserttitlelogoright}
+                };
+            \fi
+
+            \node[anchor=south west,text width=\slidewidth-1cm,align=left] at (0.5cm,0.6\slideheight) {\color{BackgroundColor}\huge\textbf{\cera\inserttitle}};
+
+            \node[anchor=north west,text width=0.45\slidewidth, align=left] at (0.5cm,0.6\slideheight) {\color{pantone281}\large\textbf{\cera\insertsubtitle}};
+
+            \ifemailset
+                \node[anchor=west,text width=0.5\slidewidth] at (0.5cm, 0.4\slideheight) {\color{TextColor}\insertauthor};
+                \node[anchor=west,text width=0.5\slidewidth] at (0.5cm,0.35\slideheight) {\color{TextColor} \textit\insertemail};
+                \node[anchor=west,text width=0.5\slidewidth] at (0.5cm,0.3\slideheight) {\color{TextColor}\insertinstitute};
+            \else
+                \node[anchor=west,text width=0.5\slidewidth] at (0.5cm, 0.4\slideheight) {\color{TextColor}\insertauthor};
+                \node[anchor=west,text width=0.5\slidewidth] at (0.5cm,0.35\slideheight) {\color{TextColor}\insertinstitute};
+            \fi
+
+            \node[anchor=west, text width=0.5\slidewidth] at (0.5cm, 0.1\slideheight) {\color{pantone281}\small\insertdate};
+
+            \iftitlecoverset
+                \node[anchor=center, inner sep=0] at (0.7\slidewidth, 0.3\slideheight) {
+                    \includegraphics[height=0.6\slideheight, width=0.5\slidewidth, keepaspectratio]{\inserttitlecover}
+                };
+            \fi
+
+        \else
+            \fill[color=pantone281] (0, \slideheight-\titlebarheight) rectangle(\slidewidth, \slideheight);
+            \node[anchor=north, text width=\slidewidth-0.2cm, inner xsep=0.5cm, inner ysep=0.25cm] at (0.5\slidewidth+0.2cm, \slideheight) {\color{BackgroundColor}\Large\cera\insertframetitle};
+
+            \iflogoset
+                \node[anchor=north east, inner sep=0] at (\slidewidth-0.2cm, \slideheight-0.1cm) {
+                    \includegraphics[height=0.8cm, width=0.8cm, keepaspectratio]{\insertlogo}
+                };
+            \fi
+            
+            \node[rectangle, text=BackgroundColor, fill=pantone2915, anchor=south east] at (\slidewidth-0.2cm, 0.2cm) {\insertframenumber};
+        \fi
+
+    \end{tikzpicture}
+}
